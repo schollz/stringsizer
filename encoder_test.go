@@ -6,7 +6,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestEncoder(t *testing.T) {
+func TestTransform(t *testing.T) {
 	baseChars = "abc"
 	base = float64(len(baseChars))
 	// Table driven tests, see https://medium.com/@sebdah/go-best-practices-testing-3448165a0e18
@@ -24,7 +24,7 @@ func TestEncoder(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		result := Encode(test.num)
+		result := Transform(test.num)
 		assert.Equal(t, test.result, result)
 	}
 }

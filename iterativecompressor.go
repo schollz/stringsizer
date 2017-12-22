@@ -2,7 +2,6 @@ package iterativecompressor
 
 import (
 	"encoding/json"
-	"fmt"
 )
 
 type IterativeCompressor struct {
@@ -14,7 +13,7 @@ type IterativeCompressor struct {
 // New generates a new compressor
 func New(compressorArg ...string) (ic *IterativeCompressor, err error) {
 	ic = new(IterativeCompressor)
-	if len(compressorArg) == 0 {
+	if len(compressorArg) > 0 {
 		err = json.Unmarshal([]byte(compressorArg[0]), &ic)
 		if err != nil {
 			return
@@ -22,12 +21,12 @@ func New(compressorArg ...string) (ic *IterativeCompressor, err error) {
 	} else {
 		ic.From = make(map[string]string)
 		ic.To = make(map[string]string)
-		ic.Current = 1
+		ic.Current = 0
 	}
 	return
 }
 
-func (ic *IterativeCompressor) Dumps() string {
+func (ic *IterativeCompressor) Save() string {
 	s, err := json.Marshal(ic)
 	if err != nil {
 		panic(err)
@@ -35,11 +34,27 @@ func (ic *IterativeCompressor) Dumps() string {
 	return string(s)
 }
 
-func transform(a map[string]interface{}) (new map[string]interface{}) {
+func (ic *IterativeCompressor) Encode(m map[string]interface{}) (new map[string]interface{}) {
 	new = make(map[string]interface{})
-	fmt.Println(a)
-	for key := range a {
-		new[key] = a[key]
+	for key := range m {
+		compressedKey := Transform(ic.Current)
+		if fromKey, ok := ic.From[key]; !ok {
+			ic.From[key] = compressedKey
+			ic.To[compressedKey] = key
+			ic.Current++
+		} else {
+			compressedKey = fromKey
+		}
+		new[compressedKey] = m[key]
 	}
 	return
+}
+
+func (ic *IterativeCompressor) Dumps(m map[string]interface{}) (new string) {
+	newMap := ic.Encode(m)
+	mapBytes, err := json.Marshal(newMap)
+	if err != nil {
+		panic(err)
+	}
+	return string(mapBytes[1 : len(mapBytes)-1])
 }

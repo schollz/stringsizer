@@ -7,11 +7,12 @@ import (
 var baseChars = "abcdefghjijklmnopqrstuvwxyzABCDEFGHJIJKLMNOPQRSTUVWXYZ0123456789,.;[]-=_+()^&!"
 var base = float64(len(baseChars))
 
-// Encode will take a number and convert it to a base string.
+// Transform will take a number and convert it to a string that
+// resembles its base formula.
 // Consider the base chars "abc". The number 0 will jsut be "a".
 // The number 1 will be "b", 2 will be "c", and 3 will be "ba".
 // (The preceding "a" is not shown).
-func Encode(originalNumber int) (encoded string) {
+func Transform(originalNumber int) (encoded string) {
 	number := float64(originalNumber)
 	if number < 1 {
 		return string(baseChars[0])
