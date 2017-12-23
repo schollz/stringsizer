@@ -2,6 +2,7 @@ package iterativecompressor
 
 import (
 	"encoding/json"
+	"errors"
 )
 
 type IterativeCompressor struct {
@@ -50,6 +51,18 @@ func (ic *IterativeCompressor) Encode(m map[string]interface{}) (new map[string]
 	return
 }
 
+func (ic *IterativeCompressor) Decode(m map[string]interface{}) (decoded map[string]interface{}, err error) {
+	decoded = make(map[string]interface{})
+	for compressedKey := range m {
+		if key, ok := ic.To[compressedKey]; ok {
+			decoded[key] = m[compressedKey]
+		} else {
+			err = errors.New("could not find key '" + compressedKey + "' during decoding")
+		}
+	}
+	return
+}
+
 func (ic *IterativeCompressor) Dumps(m map[string]interface{}) (new string) {
 	newMap := ic.Encode(m)
 	mapBytes, err := json.Marshal(newMap)
@@ -57,4 +70,14 @@ func (ic *IterativeCompressor) Dumps(m map[string]interface{}) (new string) {
 		panic(err)
 	}
 	return string(mapBytes[1 : len(mapBytes)-1])
+}
+
+func (ic *IterativeCompressor) Loads(s string) (m map[string]interface{}, err error) {
+	encoded := make(map[string]interface{})
+	err = json.Unmarshal([]byte("{"+s+"}"), &encoded)
+	if err != nil {
+		return
+	}
+	m, err = ic.Decode(encoded)
+	return
 }
