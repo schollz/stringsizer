@@ -1,4 +1,4 @@
-package iterativecompressor
+package mapkeys
 
 import (
 	"testing"
