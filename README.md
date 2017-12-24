@@ -1,9 +1,9 @@
-# mapkeys
+# mapshrink
 
-[![travis](https://travis-ci.org/schollz/mapkeys.svg?branch=master)](https://travis-ci.org/schollz/mapkeys) 
-[![go report card](https://goreportcard.com/badge/github.com/schollz/mapkeys)](https://goreportcard.com/report/github.com/schollz/mapkeys) 
-[![coverage](https://img.shields.io/badge/coverage-92%25-brightgreen.svg)](https://gocover.io/github.com/schollz/mapkeys)
-[![godocs](https://godoc.org/github.com/schollz/mapkeys?status.svg)](https://godoc.org/github.com/schollz/mapkeys) 
+[![travis](https://travis-ci.org/schollz/mapshrink.svg?branch=master)](https://travis-ci.org/schollz/mapshrink) 
+[![go report card](https://goreportcard.com/badge/github.com/schollz/mapshrink)](https://goreportcard.com/report/github.com/schollz/mapshrink) 
+[![coverage](https://img.shields.io/badge/coverage-92%25-brightgreen.svg)](https://gocover.io/github.com/schollz/mapshrink)
+[![godocs](https://godoc.org/github.com/schollz/mapshrink?status.svg)](https://godoc.org/github.com/schollz/mapshrink) 
 
 A very simple way to exchange keys in a map for a shorter version of the key (1-2 chars).
 

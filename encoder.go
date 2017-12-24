@@ -1,4 +1,4 @@
-package mapkeys
+package mapslimmer
 
 import (
 	"math"

@@ -1,21 +1,21 @@
-package mapkeys
+package mapslimmer
 
 import (
 	"encoding/json"
 	"errors"
 )
 
-type MapKeys struct {
+type MapSlimmer struct {
 	From    map[string]string
 	To      map[string]string
 	Current int
 }
 
-// Init generates a new map key compressor
-func Init(compressorArg ...string) (mk *MapKeys, err error) {
-	mk = new(MapKeys)
-	if len(compressorArg) > 0 {
-		err = json.Unmarshal([]byte(compressorArg[0]), &mk)
+// Init generates a new map key shrinker
+func Init(slimmerArg ...string) (mk *MapSlimmer, err error) {
+	mk = new(MapSlimmer)
+	if len(slimmerArg) > 0 {
+		err = json.Unmarshal([]byte(slimmerArg[0]), &mk)
 		if err != nil {
 			return
 		}
@@ -27,9 +27,9 @@ func Init(compressorArg ...string) (mk *MapKeys, err error) {
 	return
 }
 
-// Save will generate a JSON of the current map keys structure to be
-// initialized for the next time you use it.
-func (mk *MapKeys) Save() string {
+// Slimmer will return the MapSlimmer JSON that can be used to
+// reinitialize the previous state.
+func (mk *MapSlimmer) Slimmer() string {
 	s, err := json.Marshal(mk)
 	if err != nil {
 		panic(err)
@@ -37,9 +37,9 @@ func (mk *MapKeys) Save() string {
 	return string(s)
 }
 
-// Shrink will convert each key to the smallest possible string, iterating
+// Slim will convert each key to the smallest possible string, iterating
 // on the current in the compressor.
-func (mk *MapKeys) Shrink(m map[string]interface{}) (new map[string]interface{}) {
+func (mk *MapSlimmer) Slim(m map[string]interface{}) (new map[string]interface{}) {
 	new = make(map[string]interface{})
 	for key := range m {
 		compressedKey := Transform(mk.Current)
@@ -56,7 +56,7 @@ func (mk *MapKeys) Shrink(m map[string]interface{}) (new map[string]interface{})
 }
 
 // Expand will convert each key to the original name.
-func (mk *MapKeys) Expand(m map[string]interface{}) (decoded map[string]interface{}, err error) {
+func (mk *MapSlimmer) Expand(m map[string]interface{}) (decoded map[string]interface{}, err error) {
 	decoded = make(map[string]interface{})
 	for compressedKey := range m {
 		if key, ok := mk.To[compressedKey]; ok {
@@ -69,8 +69,8 @@ func (mk *MapKeys) Expand(m map[string]interface{}) (decoded map[string]interfac
 }
 
 // Dumps will return a string of the JSON encoded shrunk map key structure.
-func (mk *MapKeys) Dumps(m map[string]interface{}) (new string) {
-	newMap := mk.Shrink(m)
+func (mk *MapSlimmer) Dumps(m map[string]interface{}) (new string) {
+	newMap := mk.Slim(m)
 	mapBytes, err := json.Marshal(newMap)
 	if err != nil {
 		panic(err)
@@ -79,7 +79,7 @@ func (mk *MapKeys) Dumps(m map[string]interface{}) (new string) {
 }
 
 // Loads will return a map from the dumped string.
-func (mk *MapKeys) Loads(s string) (m map[string]interface{}, err error) {
+func (mk *MapSlimmer) Loads(s string) (m map[string]interface{}, err error) {
 	encoded := make(map[string]interface{})
 	err = json.Unmarshal([]byte("{"+s+"}"), &encoded)
 	if err != nil {
