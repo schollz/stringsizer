@@ -2,6 +2,7 @@ package mapslimmer
 
 import (
 	"encoding/json"
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -28,6 +29,33 @@ func BenchmarkCompressing(b *testing.B) {
 	}
 }
 
+func ExampleDumps() {
+	// make a map
+	a := make(map[string]interface{})
+	a["some-long-key"] = "data"
+
+	// Slim the map to string
+	ms, _ := Init()
+	aString := ms.Dumps(a)
+	fmt.Println(aString)
+
+	// Store the slimmer to expand it later
+	slimmer := ms.Slimmer()
+	fmt.Println(slimmer)
+
+	// Slim another map loading the previous slimmer
+	a2 := make(map[string]interface{})
+	a2["some-long-key"] = "data2"
+	ms2, _ := Init(slimmer)
+	a2String := ms2.Dumps(a2)
+	fmt.Println(a2String)
+
+	// Output: "a":"data"
+	// {"From":{"some-long-key":"a"},"To":{"a":"some-long-key"},"Current":1}
+	// "a":"data2"
+
+}
+
 func TestCompression(t *testing.T) {
 	a := make(map[string]interface{})
 	a["zack"] = -42.0
@@ -37,6 +65,11 @@ func TestCompression(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, 45, len(mk.Dumps(a)))
 	ac := mk.Dumps(a)
+
+	bytesA, _ := json.Marshal(a)
+	fmt.Println(string(bytesA))
+	fmt.Println(ac)
+	fmt.Println(mk.Slimmer())
 
 	b := make(map[string]interface{})
 	b["zack"] = -32.0
