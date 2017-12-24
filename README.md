@@ -1,11 +1,11 @@
-# iterativecompressor
+# mapkeys
 
-[![travis](https://travis-ci.org/schollz/iterativecompressor.svg?branch=master)](https://travis-ci.org/schollz/iterativecompressor) 
-[![go report card](https://goreportcard.com/badge/github.com/schollz/iterativecompressor)](https://goreportcard.com/report/github.com/schollz/iterativecompressor) 
-[![coverage](https://img.shields.io/badge/coverage-92%25-brightgreen.svg)](https://gocover.io/github.com/schollz/iterativecompressor)
-[![godocs](https://godoc.org/github.com/schollz/iterativecompressor?status.svg)](https://godoc.org/github.com/schollz/iterativecompressor) 
+[![travis](https://travis-ci.org/schollz/mapkeys.svg?branch=master)](https://travis-ci.org/schollz/mapkeys) 
+[![go report card](https://goreportcard.com/badge/github.com/schollz/mapkeys)](https://goreportcard.com/report/github.com/schollz/mapkeys) 
+[![coverage](https://img.shields.io/badge/coverage-92%25-brightgreen.svg)](https://gocover.io/github.com/schollz/mapkeys)
+[![godocs](https://godoc.org/github.com/schollz/mapkeys?status.svg)](https://godoc.org/github.com/schollz/mapkeys) 
 
-A very simple way to encode short strings. Basically the converted keeps a running tally and converts any string to a base representation of the next number in the tally.
+A very simple way to exchange keys in a map for a shorter version of the key (1-2 chars).
 
 Basically it converts something like:
 
@@ -26,3 +26,9 @@ while generating a compressor that includes the values that were exchanged:
   "To":{"a":"ab:cd:ef:gh:ij","b":"zack"}
 }
 ```
+
+so that they can be changed back.
+
+## Why?
+
+I plan on encoding the same set of 10-100 MAC addresses and this way will be a fast and efficient way to store the random sets in a database.
