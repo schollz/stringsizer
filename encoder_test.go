@@ -24,7 +24,7 @@ func TestTransform(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		result := Transform(test.num)
+		result := transform(test.num)
 		assert.Equal(t, test.result, result)
 	}
 }

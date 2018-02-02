@@ -17,24 +17,28 @@ I plan on encoding the same set of 10-100 MAC addresses in JSON payloads that ar
 
 ```golang
 // make a map
-a := make(map[string]interface{})
-a["some-long-key"] = "data"
+someMap := make(map[string]interface{})
+someMap["some-long-key"] = "data"
 
 // Slim the map to string
 ms, _ := Init()
-aString := ms.Dumps(a)
+aString := ms.Dumps(someMap)
+fmt.Println(aString)
 // "a":"data"
 
 // Store the slimmer to expand it later
-slimmer := ms.Slimmer()
-// {"From":{"some-long-key":"a"},"To":{"a":"some-long-key"},"Current":1}
+slimmerJSON := ms.JSON()
+fmt.Println(slimmerJSON)
+// {"encoding":{"some-long-key":"a"},"current":1}
 
-// Slim another map loading the previous slimmer
-a2 := make(map[string]interface{})
-a2["some-long-key"] = "data2"
-ms2, _ := Init(slimmer)
-a2String := ms2.Dumps(a2)
-// "a":"data2"
+// Expand another map loading the previous slimmer
+someOtherMap := make(map[string]interface{})
+someOtherMap["a"] = "data2"
+ms, _ = Init(slimmerJSON)
+someOtherMapDecoded, _ := ms.Expand(someOtherMap)
+fmt.Println(someOtherMapDecoded)
+// map[some-long-key:data2]
+
 ```
 
 # License 

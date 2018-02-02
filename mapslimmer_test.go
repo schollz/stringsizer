@@ -31,28 +31,31 @@ func BenchmarkCompressing(b *testing.B) {
 
 func ExampleDumps() {
 	// make a map
-	a := make(map[string]interface{})
-	a["some-long-key"] = "data"
+	someMap := make(map[string]interface{})
+	someMap["some-long-key"] = "data"
 
 	// Slim the map to string
 	ms, _ := Init()
-	aString := ms.Dumps(a)
+	aString := ms.Dumps(someMap)
 	fmt.Println(aString)
+	// "a":"data"
 
 	// Store the slimmer to expand it later
-	slimmer := ms.Slimmer()
-	fmt.Println(slimmer)
+	slimmerJSON := ms.JSON()
+	fmt.Println(slimmerJSON)
+	// {"encoding":{"some-long-key":"a"},"current":1}
 
-	// Slim another map loading the previous slimmer
-	a2 := make(map[string]interface{})
-	a2["some-long-key"] = "data2"
-	ms2, _ := Init(slimmer)
-	a2String := ms2.Dumps(a2)
-	fmt.Println(a2String)
+	// Expand another map loading the previous slimmer
+	someOtherMap := make(map[string]interface{})
+	someOtherMap["a"] = "data2"
+	ms, _ = Init(slimmerJSON)
+	someOtherMapDecoded, _ := ms.Expand(someOtherMap)
+	fmt.Println(someOtherMapDecoded)
+	// map[some-long-key:data2]
 
 	// Output: "a":"data"
-	// {"From":{"some-long-key":"a"},"To":{"a":"some-long-key"},"Current":1}
-	// "a":"data2"
+	// {"encoding":{"some-long-key":"a"},"current":1}
+	// map[some-long-key:data2]
 
 }
 
@@ -69,7 +72,7 @@ func TestCompression(t *testing.T) {
 	bytesA, _ := json.Marshal(a)
 	fmt.Println(string(bytesA))
 	fmt.Println(ac)
-	fmt.Println(mk.Slimmer())
+	fmt.Println(mk.JSON())
 
 	b := make(map[string]interface{})
 	b["zack"] = -32.0
@@ -87,7 +90,7 @@ func TestCompression(t *testing.T) {
 	assert.Nil(t, err)
 	assert.Equal(t, a, acd)
 
-	mkSave := mk.Slimmer()
+	mkSave := mk.JSON()
 	mkLoad, err := Init(mkSave)
 	assert.Nil(t, err)
 	assert.Equal(t, mk.Current, mkLoad.Current)

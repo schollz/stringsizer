@@ -5,10 +5,10 @@ import (
 	"errors"
 )
 
+// MapSlimmer defines the patterns of encoding and the current state of encoding.
 type MapSlimmer struct {
-	From    map[string]string
-	To      map[string]string
-	Current int
+	Encoding map[string]string `json:"encoding"`
+	Current  int               `json:"current"`
 }
 
 // Init generates a new map key shrinker
@@ -20,8 +20,7 @@ func Init(slimmerArg ...string) (mk *MapSlimmer, err error) {
 			return
 		}
 	} else {
-		mk.From = make(map[string]string)
-		mk.To = make(map[string]string)
+		mk.Encoding = make(map[string]string)
 		mk.Current = 0
 	}
 	return
@@ -29,7 +28,7 @@ func Init(slimmerArg ...string) (mk *MapSlimmer, err error) {
 
 // Slimmer will return the MapSlimmer JSON that can be used to
 // reinitialize the previous state.
-func (mk *MapSlimmer) Slimmer() string {
+func (mk *MapSlimmer) JSON() string {
 	s, err := json.Marshal(mk)
 	if err != nil {
 		panic(err)
@@ -42,10 +41,9 @@ func (mk *MapSlimmer) Slimmer() string {
 func (mk *MapSlimmer) Slim(m map[string]interface{}) (new map[string]interface{}) {
 	new = make(map[string]interface{})
 	for key := range m {
-		compressedKey := Transform(mk.Current)
-		if fromKey, ok := mk.From[key]; !ok {
-			mk.From[key] = compressedKey
-			mk.To[compressedKey] = key
+		compressedKey := transform(mk.Current)
+		if fromKey, ok := mk.Encoding[key]; !ok {
+			mk.Encoding[key] = compressedKey
 			mk.Current++
 		} else {
 			compressedKey = fromKey
@@ -57,9 +55,13 @@ func (mk *MapSlimmer) Slim(m map[string]interface{}) (new map[string]interface{}
 
 // Expand will convert each key to the original name.
 func (mk *MapSlimmer) Expand(m map[string]interface{}) (decoded map[string]interface{}, err error) {
+	encodingTo := make(map[string]string)
+	for k, v := range mk.Encoding {
+		encodingTo[v] = k
+	}
 	decoded = make(map[string]interface{})
 	for compressedKey := range m {
-		if key, ok := mk.To[compressedKey]; ok {
+		if key, ok := encodingTo[compressedKey]; ok {
 			decoded[key] = m[compressedKey]
 		} else {
 			err = errors.New("could not find key '" + compressedKey + "' during decoding")
