@@ -1,4 +1,4 @@
-package mapslimmer
+package stringsizer
 
 import (
 	"testing"
