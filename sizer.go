@@ -48,7 +48,7 @@ func (ss *StringSizer) ShrinkMap(m map[string]interface{}) (new map[string]inter
 	defer ss.Unlock()
 	new = make(map[string]interface{})
 	for key := range m {
-		compressedKey := transform(ss.Current)
+		compressedKey := Transform(ss.Current)
 		if frossey, ok := ss.Encoding[key]; !ok {
 			ss.Encoding[key] = compressedKey
 			ss.Current++
@@ -104,7 +104,7 @@ func (ss *StringSizer) ExpandMapFromString(s string) (m map[string]interface{}, 
 func (ss *StringSizer) ShrinkString(original string) (transformed string) {
 	ss.Lock()
 	defer ss.Unlock()
-	transformed = transform(ss.Current)
+	transformed = Transform(ss.Current)
 	ss.Encoding[original] = transformed
 	ss.Current++
 	return

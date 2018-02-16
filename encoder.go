@@ -4,7 +4,7 @@ import (
 	"math"
 )
 
-var baseChars = "abcdefghjijklmnopqrstuvwxyzABCDEFGHJIJKLMNOPQRSTUVWXYZ0123456789,.;[]-=_+()^&!"
+var baseChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789,.;[]-=_+()^&!"
 var base = float64(len(baseChars))
 
 // Transform will take a number and convert it to a string that
@@ -12,7 +12,7 @@ var base = float64(len(baseChars))
 // Consider the base character library "abc". The number 0 will just be "a".
 // The number 1 will be "b", 2 will be "c", and 3 will be "ba".
 // (The preceding "a" is not shown).
-func transform(originalNumber int) (encoded string) {
+func Transform(originalNumber int) (encoded string) {
 	number := float64(originalNumber)
 	if number < 1 {
 		return string(baseChars[0])

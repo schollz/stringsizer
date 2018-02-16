@@ -24,7 +24,19 @@ func TestTransform(t *testing.T) {
 	}
 
 	for _, test := range tests {
-		result := transform(test.num)
+		result := Transform(test.num)
 		assert.Equal(t, test.result, result)
+	}
+}
+
+func TestTransform2(t *testing.T) {
+	alreadyHave := make(map[string]struct{})
+	for i := 0; i < 300; i++ {
+		s := Transform(i)
+		if _, ok := alreadyHave[s]; !ok {
+			alreadyHave[s] = struct{}{}
+		} else {
+			t.Errorf("already have one: %d, %s", i, s)
+		}
 	}
 }
